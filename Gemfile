@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rspec'
-gem 'sinatra'
-gem 'shotgun'
 gem 'capybara'
+gem 'rspec'
 gem 'rubocop', '0.79.0'
+gem 'shotgun'
+gem 'sinatra'
 gem 'simplecov', require: false
-gem 'simplecov-console', require: false
 gem 'pg'
+gem 'simplecov-console', require: false
