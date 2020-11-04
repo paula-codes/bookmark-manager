@@ -41,4 +41,27 @@ describe Bookmark do
       expect(Bookmark.all.length).to eq 0
     end
   end
+
+  describe '#self.update' do
+    it 'allows to update a bookmark' do
+      bookmark = Bookmark.add(url: 'http://www.asos.com', title: 'ASOS')
+      updated_bookmark = Bookmark.update(id: bookmark.id, url: 'http://www.pasos.com', title: 'PASOS')
+
+      expect(updated_bookmark).to be_a Bookmark
+      expect(updated_bookmark.id).to eq bookmark.id
+      expect(updated_bookmark.title).to eq 'PASOS'
+      expect(updated_bookmark.url).to eq 'http://www.pasos.com'
+    end
+  end
+
+  describe '#self.find' do
+    it 'finds the bookmark object' do
+      bookmark = Bookmark.add(url: 'http://www.asos.com', title: 'ASOS')
+      old_bookmark = Bookmark.find(id: bookmark.id)
+
+      expect(old_bookmark.id).to eq bookmark.id
+      expect(old_bookmark.title).to eq 'ASOS'
+      expect(old_bookmark.url).to eq 'http://www.asos.com'
+    end
+  end
 end
