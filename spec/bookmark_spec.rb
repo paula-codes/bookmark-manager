@@ -9,7 +9,7 @@ describe Bookmark do
     end
 
     it "returns a list of all bookmarks" do
-      con = PG.connect :dbname => 'bookmark_manager_test', :user => 'paula'
+      DatabaseConnection.setup('bookmark_manager_test')
       
       bookmark = Bookmark.add(url: "http://www.makersacademy.com", title: "Makers Academy")
       bookmarks = Bookmark.all

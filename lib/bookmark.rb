@@ -1,4 +1,5 @@
 require 'pg'
+require 'database_connection'
 
 class Bookmark
   attr_reader :id, :title, :url
@@ -10,13 +11,7 @@ class Bookmark
   end
 
   def self.all
-   if ENV['ENV'] == 'test'
-      con = PG.connect :dbname => 'bookmark_manager_test', :user => 'paula'
-    else
-      con = PG.connect :dbname => 'bookmark_manager', :user => 'paula'
-    end
-      
-    data = con.exec "SELECT * FROM bookmarks"
+    data = DatabaseConnection.query("SELECT * FROM bookmarks")
     data.map do |bookmark|
       Bookmark.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'])
     end
