@@ -2,6 +2,7 @@ require 'bookmark'
 require 'database_helper'
 
 describe Bookmark do
+  let(:comment_class) { double(:comment_class) }
 
   describe '#self.all' do
     it "connects to the bookmarks table" do
@@ -25,13 +26,16 @@ describe Bookmark do
   describe '#self.add' do
     it 'adds a new bookmark' do
       bookmark = Bookmark.add(url: 'http://www.asos.com', title: 'ASOS')
-      persisted_data = persisted_data(id: bookmark.id)
+      persisted_data = persisted_data(table: 'bookmarks', id: bookmark.id)
 
-      expect(bookmark).to be_a Bookmark
-      expect(bookmark.id).to eq persisted_data['id']
+      expect(bookmark.id).to eq persisted_data.first['id']
       expect(bookmark.title).to eq 'ASOS'
       expect(bookmark.url).to eq 'http://www.asos.com'
     end
+
+    it 'does not create a bookmark if URL is invalid' do
+      bookmark = Bookmark.add(url: 'bad url', title: 'bad title')
+      expect(Bookmark.all).to be_empty
   end
 
   describe '#self.delete' do
@@ -64,4 +68,13 @@ describe Bookmark do
       expect(old_bookmark.url).to eq 'http://www.asos.com'
     end
   end
+
+  describe '#comments' do
+    it 'calls .where on the Comment class' do
+      bookmark = Bookmark.add(title: 'ASOS', url: 'http://www.asos.com')
+      expect(comment_class).to receive(:where).with(bookmark_id: bookmark.id)
+      bookmark.comments(comment_class)
+    end
+  end
+end
 end
