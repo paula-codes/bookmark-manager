@@ -1,6 +1,7 @@
 require 'pg'
 require_relative 'database_connection'
-require_relative './comment.rb'
+require_relative './comment'
+require_relative './tag'
 
 class Bookmark
   attr_reader :id, :title, :url
@@ -39,8 +40,19 @@ class Bookmark
     Bookmark.new(id: data[0]['id'], title: data[0]['title'], url: data[0]['url'])
   end
 
+  def self.where(tag_id:)
+    data = DatabaseConnection.query("SELECT id, title, url FROM bookmark_tags INNER JOIN bookmarks ON bookmarks.id = bookmark_tags.bookmark_id WHERE bookmark_tags.tag_id = '#{tag_id}';")
+    data.map do |bookmark|
+      Bookmark.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'])
+    end
+  end
+
   def comments(comment_class = Comment)
     comment_class.where(bookmark_id: id)
+  end
+
+  def tags(tag_class = Tag)
+    tag_class.where(bookmark_id: id)
   end
 
   private

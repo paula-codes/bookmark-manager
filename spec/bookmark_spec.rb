@@ -3,6 +3,7 @@ require 'database_helper'
 
 describe Bookmark do
   let(:comment_class) { double(:comment_class) }
+  let(:tag_class) { double(:tag_class)}
 
   describe '#self.all' do
     it "connects to the bookmarks table" do
@@ -69,11 +70,37 @@ describe Bookmark do
     end
   end
 
+  describe '#self.where' do
+    it 'returns bookmarks with the given tag id' do
+      bookmark = Bookmark.add(url: 'http://www.asos.com', title: 'ASOS')
+      tag1 = Tag.add(content: 'Test tag 1')
+      tag2 = Tag.add(content: 'Test tag 2')
+      BookmarkTag.add(bookmark_id: bookmark.id, tag_id: tag1.id)
+      BookmarkTag.add(bookmark_id: bookmark.id, tag_id: tag2.id)
+
+      bookmarks = Bookmark.where(tag_id: tag1.id)
+      result = bookmarks.first
+
+      expect(bookmarks.length).to eq 1
+      expect(result.id).to eq bookmark.id
+      expect(result.title).to eq bookmark.title
+      expect(result.url).to eq bookmark.url
+    end
+  end
+
   describe '#comments' do
     it 'calls .where on the Comment class' do
       bookmark = Bookmark.add(title: 'ASOS', url: 'http://www.asos.com')
       expect(comment_class).to receive(:where).with(bookmark_id: bookmark.id)
       bookmark.comments(comment_class)
+    end
+  end
+
+  describe '#tags' do
+    it 'calls .where on the Tag class' do
+      bookmark = Bookmark.add(title: 'ASOS', url: 'http://www.asos.com')
+      expect(tag_class).to receive(:where).with(bookmark_id: bookmark.id)
+      bookmark.tags(tag_class)
     end
   end
 end
