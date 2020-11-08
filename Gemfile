@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'bcrypt'
 gem 'capybara'
 gem 'rspec'
 gem 'rubocop', '0.79.0'
